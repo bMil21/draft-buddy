@@ -1,0 +1,6 @@
+@import '../../styles/vars.css';
+
+.Sidebar1 {
+  width: 80px;
+  background-color: var(--primary-color);
+}

@@ -1,0 +1,9 @@
+@import '../../styles/vars.css';
+
+.Home {
+  color: var(--primary-color);
+  text-align: left;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
