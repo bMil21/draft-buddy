@@ -13,8 +13,10 @@
   margin: 0;
 }
 .Nav button:hover {
-  background: rgba(255,255,255, 0.1);
+  background: rgba(0,0,0, 0.1);
   cursor: pointer;
+  box-shadow: inset 0 -2px 3px rgb(0 0 0 / 10%);
+  
 }
 .Nav .icon {
   width: 24px;
