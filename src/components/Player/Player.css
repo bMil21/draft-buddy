@@ -1,0 +1,8 @@
+.Player span {
+  display: inline-block;
+  margin: 0 8px;
+}
+
+.player-num {
+  min-width: 50px;
+}

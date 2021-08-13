@@ -1,4 +1,4 @@
-import { PlayerModel } from './PlayerModel';
+import PlayerModel from './PlayerModel';
 
 interface DraftRepo {
   getPlayers(): Promise<PlayerModel[]>;

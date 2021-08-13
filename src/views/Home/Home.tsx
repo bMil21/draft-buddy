@@ -1,6 +1,8 @@
 import React, { ReactElement } from 'react';
 import PlayersMain from '../../components/PlayersMain';
 import Sidebar1 from '../../components/Sidebar1';
+import LocalDraftRepo from '../../repos/LocalDraftRepo';
+import PlayersService from '../../services/PlayersService';
 import './Home.css';
 
 class Home extends React.Component {
@@ -23,7 +25,9 @@ class Home extends React.Component {
       //   - player details
       <div className="Home">
         <Sidebar1 />
-        <PlayersMain />
+        <PlayersMain 
+          playersService={new PlayersService(new LocalDraftRepo())} 
+        />
       </div>
     );
   }

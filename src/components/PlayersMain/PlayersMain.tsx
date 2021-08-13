@@ -1,27 +1,27 @@
 import React from 'react';
-import LocalDraftRepo from '../../repos/LocalDraftRepo';
-import { PlayerModel } from '../../models/PlayerModel';
-import PlayersService from '../../services/PlayersService';
+import PlayerModel from '../../models/PlayerModel';
+import { IPlayersService } from '../../services/PlayersService';
 import Player from '../Player';
 import './PlayersMain.css';
-import DraftRepo from '../../models/DraftRepo';
 import { useState } from 'react';
 import { useEffect } from 'react';
 
-function PlayersMain(): JSX.Element {
+interface PlayersMainProps {
+  playersService: IPlayersService,
+}
+
+function PlayersMain(props: PlayersMainProps): JSX.Element {
   const [players, setPlayers,] = useState<PlayerModel[]>([]);
-  const repo: DraftRepo = new LocalDraftRepo(); // TODO: make functional
 
   const getPlayers = async (): Promise<void> => {
-    const players = await new PlayersService(repo).getPlayers(); // TODO: make functional
+    const players = await props.playersService.getPlayers();
     setPlayers(players);
   };
 
   const createPlayerEls = (): JSX.Element[] => players.map((player) => {
     return (
       <div key={player.playerId}>
-        <p>{player?.name}</p>
-        <Player />
+        <Player player={player} />
       </div>
     );
   });

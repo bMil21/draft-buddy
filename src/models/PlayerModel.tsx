@@ -1,26 +1,26 @@
 
-export class PlayerModel {
+class PlayerModel {
   playerId: number;
+  num?: number;
   name: string;
   position: string;
   team: string;
   adp: number;
-  adpFormatted: string;
   timesDrafted: number;
   high: number;
   low: number;
   stdev: number;
   bye: number;
-  picked: boolean;
-  faved: boolean;
+  picked?: boolean;
+  faved?: boolean;
 
   constructor(map: PlayerMap) {
     this.playerId = map.playerId;
+    this.num = map.num;
     this.name = map.name;
     this.position = map.position;
     this.team = map.team;
     this.adp = map.adp;
-    this.adpFormatted = map.adpFormatted;
     this.timesDrafted = map.timesDrafted;
     this.high = map.high;
     this.low = map.low;
@@ -31,13 +31,15 @@ export class PlayerModel {
   }
 }
 
+export default PlayerModel;
+
 export interface PlayerMap {
   playerId: number;
+  num: number;
   name: string;
   position: string;
   team: string;
   adp: number;
-  adpFormatted: string;
   timesDrafted: number;
   high: number;
   low: number;

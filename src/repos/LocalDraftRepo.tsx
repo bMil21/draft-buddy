@@ -1,5 +1,9 @@
 import DraftRepo from '../models/DraftRepo';
-import { PlayerMap, PlayerModel } from '../models/PlayerModel';
+import PlayerModel, { PlayerMap } from '../models/PlayerModel';
+
+interface LocalDraftData {
+  players: LocalDraftPlayer[];
+}
 
 interface LocalDraftPlayer {
   player_id: number;
@@ -21,6 +25,7 @@ class LocalDraftRepo implements DraftRepo {
    * @returns {Promise<PlayerModel[]}
    */
   getPlayers = (): Promise<PlayerModel[]> => {
+    // TODO: abstract layer for fetch in case we want to use axios, etc.
     return fetch(
       'assets/data/players.json',
       {
@@ -31,21 +36,21 @@ class LocalDraftRepo implements DraftRepo {
       }
     ).then(res => {
       return res.json();
-    }).then(json => {
-      return json.players.map((player: LocalDraftPlayer) => this.convertToPlayerModel(player));
+    }).then((json) => {
+      return json.players.map((player: LocalDraftPlayer, index: number) => this.convertToPlayerModel(player, index));
     }).catch((e: Error) => {
       console.log('Error getting players', e);
     });
   }
 
-  convertToPlayerModel(json: LocalDraftPlayer): PlayerModel {
+  convertToPlayerModel(json: LocalDraftPlayer, index: number): PlayerModel {
     const map: PlayerMap = {
       playerId: json['player_id'] ?? null,
+      num: index + 1,
       name: json['name'] ?? null,
       position: json['position'] ?? null,
       team: json['team'] ?? null,
       adp: json['adp'] ?? null,
-      adpFormatted: json['adp_formatted'] ?? null,
       timesDrafted: json['times_drafted'] ?? null,
       high: json['high'] ?? null,
       low: json['low'] ?? null,

@@ -1,37 +1,65 @@
 import DraftRepo from '../models/DraftRepo';
-import { PlayerModel } from '../models/PlayerModel';
+import PlayerModel from '../models/PlayerModel';
 
-class PlayersService {
-  private repo: DraftRepo;
+export interface IPlayersService {
+  getPlayers: () => Promise<PlayerModel[]>;
+  getCachedPlayers: () => PlayerModel[];
+  fetchPlayers: () => Promise<PlayerModel[]>;
+}
+
+class PlayersService implements IPlayersService {
+  private _repo: DraftRepo;
 
   constructor(repo: DraftRepo) {
-    this.repo = repo;
+    this._repo = repo;
   }
 
-  /**
-   * Get Players from Given Repo
-   */
   getPlayers = async (): Promise<PlayerModel[]> => {
-    const cachedPlayers = localStorage.getItem('players');
-    let players: PlayerModel[] = [];
+    const cachedPlayers = this.getCachedPlayers();
 
     if (cachedPlayers && cachedPlayers.length > 0) {
       // Use Cache
       console.log('Use Cache:', cachedPlayers);
-      players = JSON.parse(cachedPlayers);
+      return cachedPlayers;
     } else {
       // Fetch Players
       console.log('Fetch players');
-      try {
-        players = await this.repo.getPlayers();
-        localStorage.setItem('players', JSON.stringify(players));
-      } catch (e) {
-        console.log('Error getting players', e);
-      }
+      return this.fetchPlayers();
     }
+  };
 
+  // updatePlayers = async (): Promise<PlayerModel[]> => {
+  //   // fetch players
+  //   // if cache, merge (object.assign) fetch with cache
+  // };
+
+  getCachedPlayers = (): PlayerModel[] => {
+    const cachedPlayers = localStorage.getItem('players');
+    if (cachedPlayers && cachedPlayers.length > 0) {
+      return JSON.parse(cachedPlayers);
+    } else {
+      return [];
+    }
+  };
+
+  fetchPlayers = async (): Promise<PlayerModel[]> => {
+    let players: PlayerModel[] = [];
+    try {
+      players = await this._repo.getPlayers();
+      localStorage.setItem('players', JSON.stringify(players));
+    } catch (e) {
+      console.log('Error getting players', e);
+    }
     return players;
   };
 }
 
 export default PlayersService;
+
+// import DraftRepo from '../repos/LocalDraftRepo';
+
+// const getPlayers = (repo: DraftRepo) => {...}
+
+// export default {
+//   getPlayers: getPlayers,
+// };
