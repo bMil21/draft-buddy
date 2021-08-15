@@ -20,7 +20,8 @@
       "high": 1,
       "low": 5,
       "stdev": 0.6,
-      "bye": 13
+      "bye": 13,
+      "picked": true
     },
     {
       "player_id": 2432,

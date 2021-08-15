@@ -1,13 +1,13 @@
 import React, { ReactElement } from 'react';
-import { FaHome } from 'react-icons/fa';
 import './Nav.css';
+import HomeIcon from '@material-ui/icons/Home';
 
 class Nav extends React.Component {
   render(): ReactElement {
     return (
       <div className="Nav">
         <button>
-          <FaHome className="icon" />
+          <HomeIcon className="icon" />
           <span className="txt">Home</span>
         </button>
       </div>

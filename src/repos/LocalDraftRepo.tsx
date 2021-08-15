@@ -17,6 +17,8 @@ interface LocalDraftPlayer {
   low: number;
   stdev: number;
   bye: number;
+  picked?: boolean;
+  faved?: boolean;
 }
 
 class LocalDraftRepo implements DraftRepo {
@@ -56,8 +58,8 @@ class LocalDraftRepo implements DraftRepo {
       low: json['low'] ?? null,
       stdev: json['stdev'] ?? null,
       bye: json['bye'] ?? null,
-      picked: false,
-      faved: false,
+      picked: json['picked'] ?? false,
+      faved: json['faved'] ?? false,
     };
     return new PlayerModel(map);
   }

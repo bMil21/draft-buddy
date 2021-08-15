@@ -1,8 +1,13 @@
-.Player span {
+.Player .MuiCardContent-root > span {
   display: inline-block;
   margin: 0 8px;
 }
 
 .player-num {
-  min-width: 50px;
+  min-width: 30px;
+  text-align: center;
+}
+
+.player-panel {
+  margin: 8px 0;
 }

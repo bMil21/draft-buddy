@@ -28,7 +28,7 @@ function PlayersMain(props: PlayersMainProps): JSX.Element {
 
   useEffect(() => {
     getPlayers();
-  });
+  }, []);
 
   if (!players || players.length < 1) {
     return (
