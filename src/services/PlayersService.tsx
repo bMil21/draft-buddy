@@ -5,6 +5,8 @@ export interface IPlayersService {
   getPlayers: () => Promise<PlayerModel[]>;
   getCachedPlayers: () => PlayerModel[];
   fetchPlayers: () => Promise<PlayerModel[]>;
+  savePlayers: (players: PlayerModel[]) => void;
+  resetPlayers: () => Promise<PlayerModel[]>;
 }
 
 class PlayersService implements IPlayersService {
@@ -28,10 +30,20 @@ class PlayersService implements IPlayersService {
     }
   };
 
-  // updatePlayers = async (): Promise<PlayerModel[]> => {
-  //   // fetch players
-  //   // if cache, merge (object.assign) fetch with cache
-  // };
+  savePlayers = (players: PlayerModel[]): void => {
+    localStorage.setItem('players', JSON.stringify(players));
+  };
+
+  clearPlayers = (): void => {
+    localStorage.removeItem('players');
+  };
+
+  resetPlayers = async (): Promise<PlayerModel[]> => {
+    // fetch players
+    // if cache, merge (object.assign) fetch with cache
+    this.clearPlayers();
+    return await this.getPlayers();
+  };
 
   getCachedPlayers = (): PlayerModel[] => {
     const cachedPlayers = localStorage.getItem('players');
@@ -46,7 +58,7 @@ class PlayersService implements IPlayersService {
     let players: PlayerModel[] = [];
     try {
       players = await this._repo.getPlayers();
-      localStorage.setItem('players', JSON.stringify(players));
+      this.savePlayers(players);
     } catch (e) {
       console.log('Error getting players', e);
     }

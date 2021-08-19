@@ -1,10 +1,6 @@
 import DraftRepo from '../models/DraftRepo';
 import PlayerModel, { PlayerMap } from '../models/PlayerModel';
 
-interface LocalDraftData {
-  players: LocalDraftPlayer[];
-}
-
 interface LocalDraftPlayer {
   player_id: number;
   name: string;
