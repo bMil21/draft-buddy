@@ -1,13 +1,28 @@
-.Player .MuiCardContent-root > span {
-  display: inline-block;
-  margin: 0 8px;
-}
-
 .player-num {
   min-width: 30px;
   text-align: center;
 }
 
 .player-panel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   margin: 8px 0;
+  padding: 8px;
+}
+
+.player-panel > span {
+  display: inline-block;
+  flex: 0 0 auto;
+  margin: 0 8px;
+  vertical-align: middle;
+}
+
+.player-name {
+  width: 30%;
+}
+
+.player-team, .player-bye {
+  width: 40px;
+  text-align: center;
 }
