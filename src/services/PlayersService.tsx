@@ -6,7 +6,8 @@ export interface IPlayersService {
   getCachedPlayers: () => PlayerModel[];
   fetchPlayers: () => Promise<PlayerModel[]>;
   savePlayers: (players: PlayerModel[]) => void;
-  resetPlayers: () => Promise<PlayerModel[]>;
+  resetPlayers: (players: PlayerModel[]) => Promise<PlayerModel[]>;
+  updatePlayers: () => Promise<PlayerModel[]>;
 }
 
 class PlayersService implements IPlayersService {
@@ -26,23 +27,60 @@ class PlayersService implements IPlayersService {
     } else {
       // Fetch Players
       console.log('Fetch players');
-      return this.fetchPlayers();
+      const newPlayers = await this.fetchPlayers();
+      this.savePlayers(newPlayers);
+      return newPlayers;
     }
   };
 
   savePlayers = (players: PlayerModel[]): void => {
-    localStorage.setItem('players', JSON.stringify(players));
+    if (players && players.length > 0) {
+      localStorage.setItem('players', JSON.stringify(players));
+    } else {
+      // TODO: snackbar
+      console.log('No players to save');
+    }
   };
 
-  clearPlayers = (): void => {
+  clearCachedPlayers = (): void => {
     localStorage.removeItem('players');
   };
 
-  resetPlayers = async (): Promise<PlayerModel[]> => {
+  resetPlayers = async (players: PlayerModel[]): Promise<PlayerModel[]> => {
+    return players.map(player => Object.assign(
+      {}, player, { faved: false, picked: false, }
+    ));
+  };
+
+  updatePlayers = async (): Promise<PlayerModel[]> => {
     // fetch players
-    // if cache, merge (object.assign) fetch with cache
-    this.clearPlayers();
-    return await this.getPlayers();
+    const newPlayers = await this.fetchPlayers();
+    // if no players... abort, notify
+    if (!newPlayers || newPlayers.length < 1) {
+      console.warn('No new players', newPlayers);
+      return this.getCachedPlayers();
+    }
+    const cachedPlayers = this.getCachedPlayers();
+    if (!cachedPlayers || cachedPlayers.length < 1) {
+      console.warn('No new players', newPlayers);
+      return newPlayers;
+    }
+    // forEach fetched player
+    // find equivalent in cache (since order might b different)
+    const updatedPlayers = newPlayers.map((newPlayer) => {
+      const foundCachedPlayer = cachedPlayers.find((cachedPlayer) => {
+        return newPlayer.name === cachedPlayer.name;
+      });
+      if (foundCachedPlayer) {
+        return Object.assign({}, newPlayer, {
+          picked: foundCachedPlayer.picked,
+          faved: foundCachedPlayer.faved,
+        });
+      } else {
+        return newPlayer;
+      }
+    });
+    return updatedPlayers;
   };
 
   getCachedPlayers = (): PlayerModel[] => {
@@ -58,7 +96,6 @@ class PlayersService implements IPlayersService {
     let players: PlayerModel[] = [];
     try {
       players = await this._repo.getPlayers();
-      this.savePlayers(players);
     } catch (e) {
       console.log('Error getting players', e);
     }
@@ -68,10 +105,10 @@ class PlayersService implements IPlayersService {
 
 export default PlayersService;
 
+// Functional Approach
+// 
 // import DraftRepo from '../repos/LocalDraftRepo';
-
 // const getPlayers = (repo: DraftRepo) => {...}
-
 // export default {
 //   getPlayers: getPlayers,
 // };

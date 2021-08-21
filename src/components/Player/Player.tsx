@@ -4,21 +4,27 @@ import PlayerModel from '../../models/PlayerModel';
 import './Player.css';
 import StarIcon from '@material-ui/icons/Star';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
+import classNames from 'classnames';
 
 interface PlayerProps {
   player: PlayerModel;
+  pickNum?: number;
   onPick: (player: PlayerModel) => void;
   onFave: (player: PlayerModel) => void;
 }
 
 function Player(props: PlayerProps): JSX.Element {
+  const pickNumEl = (props.pickNum)
+    ? <span>pick<br />#{props.pickNum}</span>
+    : null;
   const faveIcon = (props?.player?.faved)
     ? <StarIcon></StarIcon>
     : <StarBorderIcon></StarBorderIcon>;
 
   return (
     <div className="Player">
-      <Card className="player-panel">
+      <div className="pick-indicator">{pickNumEl}</div>
+      <Card className={classNames('player-panel', { picked: props.player.picked, })}>
         <span><Checkbox
           checked={props?.player?.picked}
           onChange={() => props.onPick(props?.player)}></Checkbox>
@@ -28,7 +34,7 @@ function Player(props: PlayerProps): JSX.Element {
         <span className="player-pos">{props?.player?.position}</span>
         <span className="player-team">{props?.player?.team}</span>
         <span className="player-bye">{props?.player?.bye}</span>
-        <span className="player-fave">
+        <span className={classNames('player-fave', { faved: props.player.faved, })}>
           <IconButton
             aria-label="favorite"
             onClick={() => props.onFave(props?.player)}
