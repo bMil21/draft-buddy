@@ -33,8 +33,17 @@ class PlayersService implements IPlayersService {
     }
   };
 
+  saveBackupPlayers = (players: PlayerModel[]): void => {
+    if (players && players.length > 0) {
+      localStorage.setItem('backupPlayers', JSON.stringify(players));
+    } else {
+      console.log('No backup players to save');
+    }
+  };
+
   savePlayers = (players: PlayerModel[]): void => {
     if (players && players.length > 0) {
+      this.saveBackupPlayers(this.getCachedPlayers());
       localStorage.setItem('players', JSON.stringify(players));
     } else {
       // TODO: snackbar
