@@ -2,7 +2,6 @@
   "players": {
     "filterStatsForExternalIds": {
       "value": [
-        2020,
         2021
       ]
     },
@@ -34,12 +33,8 @@
     },
     "filterStatsForSourceIds": {
       "value": [
-        0,
         1
       ]
-    },
-    "useFullProjectionTable": {
-      "value": true
     },
     "sortAppliedStatTotal": {
       "sortAsc": false,
@@ -56,6 +51,17 @@
       "sortAsc": false
     },
     "limit": 300,
+    "offset": 0,
+    "filterRanksForScoringPeriodIds": {
+      "value": [
+        1
+      ]
+    },
+    "filterRanksForRankTypes": {
+      "value": [
+        "PPR"
+      ]
+    },
     "filterRanksForSlotIds": {
       "value": [
         0,

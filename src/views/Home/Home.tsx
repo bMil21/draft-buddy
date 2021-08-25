@@ -1,11 +1,32 @@
 import React, { ReactElement } from 'react';
 import PlayersMain from '../../components/PlayersMain';
 import Sidebar1 from '../../components/Sidebar1';
-import LocalDraftRepo from '../../repos/LocalDraftRepo';
+import DraftRepoMap, { DraftRepoEnum } from '../../models/DraftRepoMap';
+import EspnDraftRepo from '../../repos/EspnDraftRepo';
 import PlayersService from '../../services/PlayersService';
 import './Home.css';
 
+interface HomeState {
+  draftRepoName: DraftRepoEnum;
+}
+
 class Home extends React.Component {
+  state: HomeState = {
+    draftRepoName: DraftRepoEnum.espn,
+  };
+
+  handleChangeDraftRepo = (draftRepoName: DraftRepoEnum): void => {
+    console.log(draftRepoName);
+    const draftRepo = DraftRepoMap.get(draftRepoName);
+    if (draftRepo) {
+      this.setState({
+        draftRepoName: draftRepoName,
+      });
+    } else {
+      console.error('Unable to find draft repo.');
+    }
+  };
+
   render(): ReactElement {
     return (
       // primary sidebar
@@ -25,8 +46,12 @@ class Home extends React.Component {
       //   - player details
       <div className="Home">
         <Sidebar1 />
-        <PlayersMain 
-          playersService={new PlayersService(new LocalDraftRepo())} 
+        <PlayersMain
+          playersService={new PlayersService(
+            DraftRepoMap.get(this.state.draftRepoName) || new EspnDraftRepo()
+          )}
+          onChangeDraftRepo={this.handleChangeDraftRepo}
+          draftRepoName={this.state.draftRepoName}
         />
       </div>
     );

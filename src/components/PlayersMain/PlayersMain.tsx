@@ -7,17 +7,23 @@ import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { Box, Button, Divider } from '@material-ui/core';
+import { Box, Button, Divider, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 import PickCalculator from '../../utilities/pick-calculator';
-// import espnFantasyFilterHeader from '../../utilities/espn-fantasy-filter-header.json';
+import { DraftRepoEnum } from '../../models/DraftRepoMap';
 
 interface PlayersMainProps {
   playersService: IPlayersService,
+  onChangeDraftRepo: (draftRepoEnum: DraftRepoEnum) => void;
+  draftRepoName: DraftRepoEnum;
 }
 
 function PlayersMain(props: PlayersMainProps): JSX.Element {
   const [players, setPlayers,] = useState<PlayerModel[]>([]);
   const myPicks = PickCalculator.getMyPicks(7, 14, 16, true);
+
+  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    props.onChangeDraftRepo(event.target.value as DraftRepoEnum);
+  };
 
   const getPlayers = async (): Promise<void> => {
     const players = await props.playersService.getPlayers();
@@ -63,20 +69,6 @@ function PlayersMain(props: PlayersMainProps): JSX.Element {
 
   useEffect(() => {
     getPlayers();
-
-    // fetch(
-    //   'https://fantasy.espn.com/apis/v3/games/ffl/seasons/2021/segments/0/leaguedefaults/3?view=kona_player_info',
-    //   {
-    //     method: 'GET',
-    //     headers: {
-    //       'x-fantasy-filter': JSON.stringify(espnFantasyFilterHeader),
-    //     },
-    //   }
-    // ).then((data) => {
-    //   return data.json();
-    // }).then((data) => {
-    //   console.log('ESPN:', data);
-    // });
   }, []);
 
   if (!players || players.length < 1) {
@@ -90,6 +82,19 @@ function PlayersMain(props: PlayersMainProps): JSX.Element {
   // TODO: move buttons to own component
   return (
     <main className="PlayersMain">
+      <FormControl variant="filled">
+        <InputLabel id="demo-simple-select-filled-label">Source</InputLabel>
+        <Select
+          labelId="demo-simple-select-filled-label"
+          id="demo-simple-select-filled"
+          value={props.draftRepoName}
+          onChange={handleChange}
+        >
+          <MenuItem value={DraftRepoEnum.local}>Local</MenuItem>
+          <MenuItem value={DraftRepoEnum.espn}>ESPN</MenuItem>
+          <MenuItem value={DraftRepoEnum.ffballCalc}>FFball Calculator</MenuItem>
+        </Select>
+      </FormControl>
       <Box
         display="flex"
         flexDirection="row"
