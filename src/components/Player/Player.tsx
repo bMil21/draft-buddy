@@ -33,7 +33,7 @@ function Player(props: PlayerProps): JSX.Element {
         <span className="player-name">{props?.player?.name}</span>
         <span className="player-pos">{props?.player?.position}</span>
         <span className="player-team">{props?.player?.team}</span>
-        <span className="player-bye">{props?.player?.bye}</span>
+        <span className="player-bye">{props?.player?.bye || '-'}</span>
         <span className={classNames('player-fave', { faved: props.player.faved, })}>
           <IconButton
             aria-label="favorite"
