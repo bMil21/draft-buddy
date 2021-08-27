@@ -1,32 +1,26 @@
 import React from 'react';
 import PlayerModel from '../../models/PlayerModel';
-import { IPlayersService } from '../../services/PlayersService';
+import PlayersService, { IPlayersService } from '../../services/PlayersService';
 import Player from '../Player';
 import './PlayersMain.css';
-import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
-import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { Box, Button, Divider, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 import PickCalculator from '../../utilities/pick-calculator';
-import { DraftRepoEnum } from '../../models/DraftRepoMap';
+import DraftRepoMap, { DraftRepoEnum } from '../../models/DraftRepoMap';
+import PlayerControls from '../PlayerControls';
+import EspnDraftRepo from '../../repos/EspnDraftRepo';
+import MyPicks from '../MyPicks';
 
-interface PlayersMainProps {
-  playersService: IPlayersService,
-  onChangeDraftRepo: (draftRepoEnum: DraftRepoEnum) => void;
-  draftRepoName: DraftRepoEnum;
-}
-
-function PlayersMain(props: PlayersMainProps): JSX.Element {
+function PlayersMain(): JSX.Element {
+  const [draftRepoName, setDraftRepoName,] = useState<DraftRepoEnum>(DraftRepoEnum.espn);
+  const [playersService, setPlayersService,] = useState<IPlayersService>(
+    new PlayersService(DraftRepoMap.get(draftRepoName) || new EspnDraftRepo())
+  );
   const [players, setPlayers,] = useState<PlayerModel[]>([]);
   const myPicks = PickCalculator.getMyPicks(7, 14, 16, true);
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    props.onChangeDraftRepo(event.target.value as DraftRepoEnum);
-  };
-
   const getPlayers = async (): Promise<void> => {
-    const players = await props.playersService.getPlayers();
+    const players = await playersService.getPlayers();
     if (players && players.length > 0) setPlayers(players);
   };
 
@@ -37,7 +31,7 @@ function PlayersMain(props: PlayersMainProps): JSX.Element {
         : player;
     });
     setPlayers(updatedPlayers);
-    props.playersService.savePlayers(updatedPlayers);
+    playersService.savePlayers(updatedPlayers);
   };
 
   const toggleFave = (favedPlayer: PlayerModel): void => {
@@ -47,13 +41,13 @@ function PlayersMain(props: PlayersMainProps): JSX.Element {
         : player;
     });
     setPlayers(updatedPlayers);
-    props.playersService.savePlayers(updatedPlayers);
+    playersService.savePlayers(updatedPlayers);
   };
 
   const resetPlayers = async (): Promise<void> => {
-    const freshPlayers = await props.playersService.resetPlayers(players);
+    const freshPlayers = await playersService.resetPlayers(players);
     setPlayers(freshPlayers);
-    props.playersService.savePlayers(freshPlayers);
+    playersService.savePlayers(freshPlayers);
   };
 
   const checkIfItsMyPick = (currentPickIndex: number): number => {
@@ -62,9 +56,20 @@ function PlayersMain(props: PlayersMainProps): JSX.Element {
   };
 
   const updatePlayers = async (): Promise<void> => {
-    const updatedPlayers = await props.playersService.updatePlayers();
+    const updatedPlayers = await playersService.updatePlayers();
     if (updatedPlayers && updatedPlayers.length > 0) setPlayers(updatedPlayers);
-    props.playersService.savePlayers(updatedPlayers);
+    playersService.savePlayers(updatedPlayers);
+  };
+
+  const changeDraftRepo = (draftRepoName: DraftRepoEnum): void => {
+    console.log(draftRepoName);
+    const draftRepo = DraftRepoMap.get(draftRepoName);
+    if (draftRepo) {
+      setDraftRepoName(draftRepoName);
+      setPlayersService(new PlayersService(draftRepo));
+    } else {
+      console.error('Unable to find draft repo.');
+    }
   };
 
   useEffect(() => {
@@ -79,41 +84,15 @@ function PlayersMain(props: PlayersMainProps): JSX.Element {
     );
   }
 
-  // TODO: move buttons to own component
   return (
     <main className="PlayersMain">
-      <FormControl variant="filled">
-        <InputLabel id="demo-simple-select-filled-label">Source</InputLabel>
-        <Select
-          labelId="demo-simple-select-filled-label"
-          id="demo-simple-select-filled"
-          value={props.draftRepoName}
-          onChange={handleChange}
-        >
-          <MenuItem value={DraftRepoEnum.local}>Local</MenuItem>
-          <MenuItem value={DraftRepoEnum.espn}>ESPN</MenuItem>
-          <MenuItem value={DraftRepoEnum.ffballCalc}>FFball Calculator</MenuItem>
-        </Select>
-      </FormControl>
-      <Box
-        display="flex"
-        flexDirection="row"
-        justifyContent="flex-end"
-      >
-        <Button
-          startIcon={<RotateLeftIcon />}
-          onClick={() => resetPlayers()}
-        >
-          Reset
-        </Button>
-        <Divider orientation="vertical" flexItem />
-        <Button
-          startIcon={<CloudDownloadIcon />}
-          onClick={() => updatePlayers()}
-        >
-          Update
-        </Button>
-      </Box>
+      <PlayerControls
+        draftRepoName={draftRepoName}
+        onChangeDraftRepo={changeDraftRepo}
+        updatePlayers={updatePlayers}
+        resetPlayers={resetPlayers}
+      />
+      <MyPicks picks={myPicks} />
       <div className="Players">
         {players.map((player, index) =>
           <div key={player.num}>
