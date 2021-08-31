@@ -48,3 +48,10 @@ export interface PlayerMap {
   picked: boolean;
   faved: boolean;
 }
+
+export interface PlayerModelProp {
+  key: keyof PlayerModel;
+  value: PlayerModel[keyof PlayerModel];
+}
+
+// export type PlayerModelMap = Map<string, string>;

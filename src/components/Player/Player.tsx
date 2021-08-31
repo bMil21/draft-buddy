@@ -9,8 +9,7 @@ import classNames from 'classnames';
 interface PlayerProps {
   player: PlayerModel;
   pickNum?: number;
-  onPick: (player: PlayerModel) => void;
-  onFave: (player: PlayerModel) => void;
+  onPropChange: (player: PlayerModel, prop: keyof PlayerModel) => void;
 }
 
 function Player(props: PlayerProps): JSX.Element {
@@ -27,7 +26,7 @@ function Player(props: PlayerProps): JSX.Element {
       <Card className={classNames('player-panel', { picked: props.player.picked, })}>
         <span><Checkbox
           checked={props?.player?.picked}
-          onChange={() => props.onPick(props?.player)}></Checkbox>
+          onChange={() => props.onPropChange(props?.player, 'picked')}></Checkbox>
         </span>
         <span className="player-num">{props?.player?.num}</span>
         <span className="player-name">{props?.player?.name}</span>
@@ -37,7 +36,7 @@ function Player(props: PlayerProps): JSX.Element {
         <span className={classNames('player-fave', { faved: props.player.faved, })}>
           <IconButton
             aria-label="favorite"
-            onClick={() => props.onFave(props?.player)}
+            onClick={() => props.onPropChange(props?.player, 'faved')}
           >
             {faveIcon}
           </IconButton>
