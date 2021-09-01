@@ -113,6 +113,7 @@ function PlayersMain(): JSX.Element {
         <Box display="flex" alignItems="center" flexDirection="row">
           <Box>
             <Filters
+              filters={filters}
               onFilter={handleFilter}
               onRemoveFilters={removeFilters}
             />
