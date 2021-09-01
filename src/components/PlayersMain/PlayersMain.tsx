@@ -42,6 +42,7 @@ function PlayersMain(): JSX.Element {
   };
 
   const checkIfItsMyPick = (currentPickIndex: number): number => {
+    if (filters.size > 0) return 0;
     const foundPickIndex = myPicks.findIndex(myPick => (currentPickIndex + 1) === myPick);
     return (foundPickIndex !== -1) ? foundPickIndex + 1 : 0;
   };
