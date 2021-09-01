@@ -64,11 +64,12 @@ function PlayersMain(): JSX.Element {
   };
 
   const handleFilter = (key: keyof PlayerModel, value: PlayerModel[keyof PlayerModel]): void => {
-    // if (filters.get(key) === value) {
-    //   // TODO: make immutable
-    //   filters.delete(key); // toggle off 
-    // }
-    const newFilters = filters.set(key, value);
+    const newFilters: PlayerModelProps = (filters.get(key) === value)
+      // filter is set, toggle OFF
+      // if toggle off is successful, return updated filters, else add
+      ? (filters.delete(key)) ? filters : filters.set(key, value)
+      // filter not set, ADD
+      : filters.set(key, value);
     setFilters(newFilters);
     refinePlayers(players);
   };
@@ -79,11 +80,7 @@ function PlayersMain(): JSX.Element {
 
   const refinePlayers = (players: PlayerModel[]): void => {
     let refinedPlayers = players;
-    // if search
-    // - refinedPlayers = searchPlayers(refinedPlayers)
-
-    console.log('Refine > Filters', filters.size, filters);
-
+    // TODO: if search,  refinedPlayers = searchPlayers(refinedPlayers)
     // Filter, if necessary
     refinedPlayers = (filters.size > 0)
       ? FilterService.filterPlayers(players, filters)
