@@ -36,6 +36,7 @@ function PlayersMain(): JSX.Element {
   };
 
   const resetPlayers = async (): Promise<void> => {
+    // TODO: insert Confirm dialog
     const freshPlayers = await playersService.resetPlayers(players);
     setPlayers(freshPlayers);
     playersService.savePlayers(freshPlayers);
@@ -79,15 +80,20 @@ function PlayersMain(): JSX.Element {
     setFilters(new Map());
   };
 
+
   const refinePlayers = (players: PlayerModel[]): void => {
     let refinedPlayers = players;
-    // TODO: if search,  refinedPlayers = searchPlayers(refinedPlayers)
+
+    // TODO: Search, if necessary
+    // e.g. refinedPlayers = searchPlayers(refinedPlayers)
+
     // Filter, if necessary
     refinedPlayers = (filters.size > 0)
       ? FilterService.filterPlayers(players, filters)
       : refinedPlayers;
     setPlayersToShow(refinedPlayers);
   };
+
 
   useEffect(() => {
     getPlayers();

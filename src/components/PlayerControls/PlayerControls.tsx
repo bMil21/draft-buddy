@@ -22,7 +22,7 @@ function PlayerControls(props: PlayerControlsProps): JSX.Element {
       flexDirection="row"
       justifyContent="flex-end"
     >
-      <FormControl variant="filled">
+      <FormControl>
         <InputLabel id="demo-simple-select-filled-label">Source</InputLabel>
         <Select
           labelId="demo-simple-select-filled-label"
@@ -35,6 +35,7 @@ function PlayerControls(props: PlayerControlsProps): JSX.Element {
           <MenuItem value={DraftRepoEnum.ffballCalc}>FFball Calculator</MenuItem>
         </Select>
       </FormControl>
+      <Divider orientation="vertical" flexItem />
       <Button
         startIcon={<RotateLeftIcon />}
         onClick={() => props.resetPlayers()}
