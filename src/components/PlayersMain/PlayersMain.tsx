@@ -1,5 +1,5 @@
 import React from 'react';
-import PlayerModel, { PlayerModelProp } from '../../models/PlayerModel';
+import PlayerModel, { PlayerModelProps } from '../../models/PlayerModel';
 import PlayersService, { IPlayersService } from '../../services/PlayersService';
 import Player from '../Player';
 import './PlayersMain.css';
@@ -21,7 +21,7 @@ function PlayersMain(): JSX.Element {
   );
   const [players, setPlayers,] = useState<PlayerModel[]>([]);
   const [playersToShow, setPlayersToShow,] = useState<PlayerModel[]>(players);
-  const [filters, setFilters,] = useState<Set<PlayerModelProp>>(new Set<PlayerModelProp>());
+  const [filters, setFilters,] = useState<PlayerModelProps>(new Map());
   const myPicks = PickCalculator.getMyPicks(7, 14, 16, true);
 
   const getPlayers = async (): Promise<void> => {
@@ -63,16 +63,18 @@ function PlayersMain(): JSX.Element {
     }
   };
 
-  const handleFilter = (playerProp: PlayerModelProp): void => {
-    // TODO: rather than filter players, save filters set
-    // players can be filtered in useEffect then
-    const newFilters = filters.add(playerProp);
+  const handleFilter = (key: keyof PlayerModel, value: PlayerModel[keyof PlayerModel]): void => {
+    // if (filters.get(key) === value) {
+    //   // TODO: make immutable
+    //   filters.delete(key); // toggle off 
+    // }
+    const newFilters = filters.set(key, value);
     setFilters(newFilters);
     refinePlayers(players);
   };
 
   const removeFilters = (): void => {
-    setFilters(new Set());
+    setFilters(new Map());
   };
 
   const refinePlayers = (players: PlayerModel[]): void => {
@@ -84,7 +86,7 @@ function PlayersMain(): JSX.Element {
 
     // Filter, if necessary
     refinedPlayers = (filters.size > 0)
-      ? FilterService.filterPlayers2(players, filters)
+      ? FilterService.filterPlayers(players, filters)
       : refinedPlayers;
     setPlayersToShow(refinedPlayers);
   };
