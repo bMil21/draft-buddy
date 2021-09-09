@@ -25,6 +25,7 @@ function PlayerControls(props: PlayerControlsProps): JSX.Element {
       <FormControl>
         <InputLabel id="demo-simple-select-filled-label">Source</InputLabel>
         <Select
+          color="secondary"
           labelId="demo-simple-select-filled-label"
           id="demo-simple-select-filled"
           value={props.draftRepoName}
@@ -37,6 +38,7 @@ function PlayerControls(props: PlayerControlsProps): JSX.Element {
       </FormControl>
       <Divider orientation="vertical" flexItem />
       <Button
+        color="secondary"
         startIcon={<RotateLeftIcon />}
         onClick={() => props.resetPlayers()}
       >
@@ -44,6 +46,7 @@ function PlayerControls(props: PlayerControlsProps): JSX.Element {
       </Button>
       <Divider orientation="vertical" flexItem />
       <Button
+        color="secondary"
         startIcon={<CloudDownloadIcon />}
         onClick={() => props.updatePlayers()}
       >

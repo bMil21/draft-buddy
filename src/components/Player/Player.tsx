@@ -25,6 +25,7 @@ function Player(props: PlayerProps): JSX.Element {
       <div className="pick-indicator">{pickNumEl}</div>
       <Card className={classNames('player-panel', { picked: props.player.picked, })}>
         <span><Checkbox
+          color="primary"
           checked={props?.player?.picked}
           onChange={() => props.onPropChange(props?.player, 'picked')}></Checkbox>
         </span>

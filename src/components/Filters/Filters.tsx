@@ -19,63 +19,63 @@ function Filters(props: FiltersProps): JSX.Element {
 
       <IconButton
         onClick={() => props.onFilter('picked', true)}
-        color={(props.filters.get('picked') === true) ? 'primary' : 'default'}
+        color={(props.filters.get('picked') === true) ? 'secondary' : 'default'}
       >
         <CheckBoxIcon></CheckBoxIcon>
       </IconButton>
 
       <IconButton
         onClick={() => props.onFilter('picked', false)}
-        color={(props.filters.get('picked') === false) ? 'primary' : 'default'}
+        color={(props.filters.get('picked') === false) ? 'secondary' : 'default'}
       >
         <CheckBoxOutlineBlankIcon></CheckBoxOutlineBlankIcon>
       </IconButton>
 
       <Button
         onClick={() => props.onRemoveFilters()}
-        color={(props.filters.size < 1) ? 'primary' : 'default'}
+        color={(props.filters.size < 1) ? 'secondary' : 'default'}
       >All</Button>
 
       <Button
         onClick={() => props.onFilter('position', 'QB')}
-        color={(props.filters.get('position') === 'QB') ? 'primary' : 'default'}
+        color={(props.filters.get('position') === 'QB') ? 'secondary' : 'default'}
       >QB</Button>
 
       <Button
         onClick={() => props.onFilter('position', 'RB')}
-        color={(props.filters.get('position') === 'RB') ? 'primary' : 'default'}
+        color={(props.filters.get('position') === 'RB') ? 'secondary' : 'default'}
       >RB</Button>
 
       <Button
         onClick={() => props.onFilter('position', 'WR')}
-        color={(props.filters.get('position') === 'WR') ? 'primary' : 'default'}
+        color={(props.filters.get('position') === 'WR') ? 'secondary' : 'default'}
       >WR</Button>
 
       <Button
         onClick={() => props.onFilter('position', 'TE')}
-        color={(props.filters.get('position') === 'TE') ? 'primary' : 'default'}
+        color={(props.filters.get('position') === 'TE') ? 'secondary' : 'default'}
       >TE</Button>
 
       <Button
         onClick={() => props.onFilter('position', 'DEF')}
-        color={(props.filters.get('position') === 'DEF') ? 'primary' : 'default'}
+        color={(props.filters.get('position') === 'DEF') ? 'secondary' : 'default'}
       >DEF</Button>
 
       <Button
         onClick={() => props.onFilter('position', 'K')}
-        color={(props.filters.get('position') === 'K') ? 'primary' : 'default'}
+        color={(props.filters.get('position') === 'K') ? 'secondary' : 'default'}
       >K</Button>
 
       <IconButton
         onClick={() => props.onFilter('faved', true)}
-        color={(props.filters.get('faved') === true) ? 'primary' : 'default'}
+        color={(props.filters.get('faved') === true) ? 'secondary' : 'default'}
       >
         <StarIcon></StarIcon>
       </IconButton>
 
       <IconButton
         onClick={() => props.onFilter('faved', false)}
-        color={(props.filters.get('faved') === false) ? 'primary' : 'default'}
+        color={(props.filters.get('faved') === false) ? 'secondary' : 'default'}
       >
         <StarBorderIcon></StarBorderIcon>
       </IconButton>
