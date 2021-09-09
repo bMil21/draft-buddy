@@ -1,5 +1,5 @@
 import React from 'react';
-import PlayerModel from '../../models/PlayerModel';
+import PlayerModel, { PlayerModelProps } from '../../models/PlayerModel';
 import PlayersService, { IPlayersService } from '../../services/PlayersService';
 import Player from '../Player';
 import './PlayersMain.css';
@@ -10,6 +10,9 @@ import DraftRepoMap, { DraftRepoEnum } from '../../models/DraftRepoMap';
 import PlayerControls from '../PlayerControls';
 import EspnDraftRepo from '../../repos/EspnDraftRepo';
 import MyPicks from '../MyPicks';
+import Filters from '../Filters';
+import { Box } from '@material-ui/core';
+import FilterService from '../../services/FilterService';
 
 function PlayersMain(): JSX.Element {
   const [draftRepoName, setDraftRepoName,] = useState<DraftRepoEnum>(DraftRepoEnum.espn);
@@ -17,6 +20,8 @@ function PlayersMain(): JSX.Element {
     new PlayersService(DraftRepoMap.get(draftRepoName) || new EspnDraftRepo())
   );
   const [players, setPlayers,] = useState<PlayerModel[]>([]);
+  const [playersToShow, setPlayersToShow,] = useState<PlayerModel[]>(players);
+  const [filters, setFilters,] = useState<PlayerModelProps>(new Map());
   const myPicks = PickCalculator.getMyPicks(7, 14, 16, true);
 
   const getPlayers = async (): Promise<void> => {
@@ -24,33 +29,21 @@ function PlayersMain(): JSX.Element {
     if (players && players.length > 0) setPlayers(players);
   };
 
-  const togglePick = (pickedPlayer: PlayerModel): void => {
-    const updatedPlayers = players.map((player) => {
-      return (pickedPlayer.playerId === player.playerId)
-        ? Object.assign({}, player, { picked: !pickedPlayer.picked, })
-        : player;
-    });
-    setPlayers(updatedPlayers);
-    playersService.savePlayers(updatedPlayers);
-  };
-
-  const toggleFave = (favedPlayer: PlayerModel): void => {
-    const updatedPlayers = players.map((player) => {
-      return (favedPlayer.playerId === player.playerId)
-        ? Object.assign({}, player, { faved: !favedPlayer.faved, })
-        : player;
-    });
+  const togglePlayerProp = (player: PlayerModel, playerProp: keyof PlayerModel): void => {
+    const updatedPlayers = playersService.togglePlayerProp(players, player, playerProp);
     setPlayers(updatedPlayers);
     playersService.savePlayers(updatedPlayers);
   };
 
   const resetPlayers = async (): Promise<void> => {
+    // TODO: insert Confirm dialog
     const freshPlayers = await playersService.resetPlayers(players);
     setPlayers(freshPlayers);
     playersService.savePlayers(freshPlayers);
   };
 
   const checkIfItsMyPick = (currentPickIndex: number): number => {
+    if (filters.size > 0) return 0;
     const foundPickIndex = myPicks.findIndex(myPick => (currentPickIndex + 1) === myPick);
     return (foundPickIndex !== -1) ? foundPickIndex + 1 : 0;
   };
@@ -72,9 +65,43 @@ function PlayersMain(): JSX.Element {
     }
   };
 
+  const handleFilter = (key: keyof PlayerModel, value: PlayerModel[keyof PlayerModel]): void => {
+    const newFilters: PlayerModelProps = (filters.get(key) === value)
+      // filter is set, toggle OFF
+      // if toggle off is successful, return updated filters, else add
+      ? (filters.delete(key)) ? filters : filters.set(key, value)
+      // filter not set, ADD
+      : filters.set(key, value);
+    setFilters(newFilters);
+    refinePlayers(players);
+  };
+
+  const removeFilters = (): void => {
+    setFilters(new Map());
+  };
+
+
+  const refinePlayers = (players: PlayerModel[]): void => {
+    let refinedPlayers = players;
+
+    // TODO: Search, if necessary
+    // e.g. refinedPlayers = searchPlayers(refinedPlayers)
+
+    // Filter, if necessary
+    refinedPlayers = (filters.size > 0)
+      ? FilterService.filterPlayers(players, filters)
+      : refinedPlayers;
+    setPlayersToShow(refinedPlayers);
+  };
+
+
   useEffect(() => {
     getPlayers();
   }, []);
+
+  useEffect(() => {
+    refinePlayers(players);
+  }, [players, filters,]);
 
   if (!players || players.length < 1) {
     return (
@@ -86,25 +113,37 @@ function PlayersMain(): JSX.Element {
 
   return (
     <main className="PlayersMain">
-      <PlayerControls
-        draftRepoName={draftRepoName}
-        onChangeDraftRepo={changeDraftRepo}
-        updatePlayers={updatePlayers}
-        resetPlayers={resetPlayers}
-      />
-      <MyPicks picks={myPicks} />
-      <div className="Players">
-        {players.map((player, index) =>
-          <div key={player.num}>
+      <header className="players-header">
+        <Box display="flex" alignItems="center" flexDirection="row">
+          <Box>
+            <Filters
+              filters={filters}
+              onFilter={handleFilter}
+              onRemoveFilters={removeFilters}
+            />
+          </Box>
+          <Box marginLeft="auto">
+            <PlayerControls
+              draftRepoName={draftRepoName}
+              onChangeDraftRepo={changeDraftRepo}
+              updatePlayers={updatePlayers}
+              resetPlayers={resetPlayers}
+            />
+          </Box>
+        </Box>
+        <MyPicks picks={myPicks} />
+      </header>
+      <section className="Players">
+        {playersToShow.map((player, index) =>
+          <div key={`${player.num}${player.name}`}>
             <Player
               player={player}
               pickNum={checkIfItsMyPick(index)}
-              onPick={togglePick}
-              onFave={toggleFave}
+              onPropChange={togglePlayerProp}
             />
           </div>
         )}
-      </div>
+      </section>
     </main>
   );
 }

@@ -1,5 +1,16 @@
 .PlayersMain {
+  position: relative;
   flex: 1;
-  padding: 24px;
+  padding: 42px 24px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.players-header {
+  padding-left: 46px;
+  flex: 0 0 auto;
+}
+.Players {
+  flex: 1;
   overflow: auto;
 }

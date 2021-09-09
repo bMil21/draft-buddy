@@ -48,3 +48,12 @@ export interface PlayerMap {
   picked: boolean;
   faved: boolean;
 }
+
+/**
+ * e.g. Map<'position', 'QB'>
+ * e.g. Map<'picked', true>
+ */
+export type PlayerModelProps = Map<
+  keyof PlayerModel,
+  PlayerModel[keyof PlayerModel]
+>;
