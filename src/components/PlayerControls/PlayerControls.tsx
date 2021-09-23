@@ -3,6 +3,8 @@ import { Box, Button, Divider, FormControl, InputLabel, MenuItem, Select } from 
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import { DraftRepoEnum } from '../../models/DraftRepoMap';
+import ConfirmDialog from '../ConfirmDialog';
+import { useState } from 'react';
 
 interface PlayerControlsProps {
   draftRepoName: DraftRepoEnum;
@@ -12,8 +14,27 @@ interface PlayerControlsProps {
 }
 
 function PlayerControls(props: PlayerControlsProps): JSX.Element {
+  const [shouldShowResetDialog, setShouldShowResetDialog,] = useState<boolean>(false);
+
   const handleDraftRepoChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     props.onChangeDraftRepo(event.target.value as DraftRepoEnum);
+  };
+
+  const openResetDialog = (): void => {
+    setShouldShowResetDialog(true);
+  };
+
+  const closeResetDialog = (): void => {
+    setShouldShowResetDialog(false);
+  };
+
+  const confirmReset = (): void => {
+    props.resetPlayers();
+    closeResetDialog();
+  };
+
+  const cancelReset = (): void => {
+    closeResetDialog();
   };
 
   return (
@@ -22,6 +43,14 @@ function PlayerControls(props: PlayerControlsProps): JSX.Element {
       flexDirection="row"
       justifyContent="flex-end"
     >
+      {shouldShowResetDialog === true
+        ? <ConfirmDialog
+          content='Are you sure you want to reset?'
+          cancel={cancelReset}
+          confirm={confirmReset}
+        />
+        : null
+      }
       <FormControl>
         <InputLabel id="demo-simple-select-filled-label">Source</InputLabel>
         <Select
@@ -40,7 +69,7 @@ function PlayerControls(props: PlayerControlsProps): JSX.Element {
       <Button
         color="secondary"
         startIcon={<RotateLeftIcon />}
-        onClick={() => props.resetPlayers()}
+        onClick={() => openResetDialog()}
       >
         Reset
       </Button>
