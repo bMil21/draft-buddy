@@ -8,6 +8,11 @@ export interface IPlayersService {
   savePlayers: (players: PlayerModel[]) => void;
   resetPlayers: (players: PlayerModel[]) => Promise<PlayerModel[]>;
   updatePlayers: () => Promise<PlayerModel[]>;
+  togglePlayerProp: (
+    players: PlayerModel[],
+    favedPlayer: PlayerModel,
+    key: keyof PlayerModel
+  ) => PlayerModel[];
 }
 
 class PlayersService implements IPlayersService {
@@ -99,6 +104,18 @@ class PlayersService implements IPlayersService {
     } else {
       return [];
     }
+  };
+
+  togglePlayerProp = (
+    players: PlayerModel[],
+    targetedPlayer: PlayerModel,
+    key: keyof PlayerModel
+  ): PlayerModel[] => {
+    return players.map((player) => {
+      return (targetedPlayer.playerId === player.playerId)
+        ? Object.assign({}, player, { [key]: !targetedPlayer[key], })
+        : player;
+    });
   };
 
   fetchPlayers = async (): Promise<PlayerModel[]> => {

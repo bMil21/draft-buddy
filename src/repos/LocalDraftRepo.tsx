@@ -37,7 +37,7 @@ class LocalDraftRepo implements DraftRepo {
     }).then((json) => {
       return json.players.map((player: LocalDraftPlayer, index: number) => this.convertToPlayerModel(player, index));
     }).catch((e: Error) => {
-      console.log('Error getting players', e);
+      console.error('Error getting players', e);
     });
   }
 
