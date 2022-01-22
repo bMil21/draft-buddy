@@ -82,12 +82,30 @@ it('should NOT have players to save', () => {
 
 
 it('should clear cached players', () => {
-  //
+  jest.spyOn(window.localStorage, 'removeItem');
+  service.clearCachedPlayers();
+  expect(window.localStorage.removeItem).toHaveBeenCalledWith('players');
 });
 
-it('should reset players to default values', () => {
-  //
+
+it('should reset players to default values', async () => {
+  players.forEach((player) => {
+    player.picked = true;
+    player.faved = true;
+  });
+  players.forEach((player) => {
+    expect(player.picked).toEqual(true);
+    expect(player.faved).toEqual(true);
+  });
+
+  const resetPlayers = await service.resetPlayers(players);
+
+  resetPlayers.forEach((player) => {
+    expect(player.picked).toEqual(false);
+    expect(player.faved).toEqual(false);
+  });
 });
+
 
 // TODO: Test UPDATE Players... smaller functions
 
