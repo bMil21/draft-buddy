@@ -122,7 +122,23 @@ it('should return an empty [] when there are no cached players', () => {
   expect(cachedPlayers).toEqual([]);
 });
 
-// TODO: Test toggle player prop
+it('should toggle given player prop (faved)', () => {
+  players[0].faved = true;
+  const toggledPlayers = service.togglePlayerProp(players, players[0], 'faved');
+  expect(toggledPlayers[0].faved).toEqual(false);
+  const remainingToggledPlayers = toggledPlayers.slice(1, toggledPlayers.length);
+  const remainingPlayers = players.slice(1, players.length);
+  expect(remainingToggledPlayers).toEqual(remainingPlayers);
+});
+
+it('should toggle given player prop (picked)', () => {
+  players[0].picked = true;
+  const toggledPlayers = service.togglePlayerProp(players, players[0], 'picked');
+  expect(toggledPlayers[0].picked).toEqual(false);
+  const remainingToggledPlayers = toggledPlayers.slice(1, toggledPlayers.length);
+  const remainingPlayers = players.slice(1, players.length);
+  expect(remainingToggledPlayers).toEqual(remainingPlayers);
+});
 
 it('should fetch new players', async () => {
   const players = await service.fetchPlayers();
