@@ -106,8 +106,58 @@ it('should reset players to default values', async () => {
   });
 });
 
+// updatePlayersWithCachedValues()
 
-// TODO: Test UPDATE Players... smaller functions
+it('should update new players with cached values', async () => {
+  const cachedPlayers: PlayerModel[] = JSON.parse(JSON.stringify(players));
+  cachedPlayers[0].picked = false;
+  cachedPlayers[0].faved = false;
+  players[0].picked = true;
+  players[0].faved = true;
+  const updatedPlayers = service.updatePlayersWithCachedValues(players, cachedPlayers);
+  expect(players).not.toEqual(updatedPlayers);
+  expect(updatedPlayers[0]).toEqual(cachedPlayers[0]);
+});
+
+it('should NOT have cached values for new players', async () => {
+  const cachedPlayers: PlayerModel[] = [];
+  const updatedPlayers = service.updatePlayersWithCachedValues(players, cachedPlayers);
+  expect(players).toEqual(updatedPlayers);
+});
+
+// updatePlayers()
+
+it('should have NO NEW players, and return cached players', async () => {
+  jest.spyOn(service, 'fetchPlayers').mockResolvedValueOnce(Promise.resolve([]));
+  jest.spyOn(service, 'getCachedPlayers').mockReturnValue([players[0],]);
+  jest.spyOn(service, 'updatePlayersWithCachedValues');
+  const updatedPlayers = await service.updatePlayers();
+  expect(service.fetchPlayers).toHaveBeenCalledTimes(1);
+  expect(service.getCachedPlayers).toHaveBeenCalledTimes(1);
+  expect(service.updatePlayersWithCachedValues).toHaveBeenCalledTimes(0);
+  expect(updatedPlayers).toEqual([players[0],]);
+});
+
+it('should have NO CACHED players, and return new players', async () => {
+  jest.spyOn(service, 'fetchPlayers').mockResolvedValueOnce(Promise.resolve([players[1],]));
+  jest.spyOn(service, 'getCachedPlayers').mockReturnValue([]);
+  jest.spyOn(service, 'updatePlayersWithCachedValues');
+  const updatedPlayers = await service.updatePlayers();
+  expect(service.fetchPlayers).toHaveBeenCalledTimes(1);
+  expect(service.getCachedPlayers).toHaveBeenCalledTimes(1);
+  expect(service.updatePlayersWithCachedValues).toHaveBeenCalledTimes(0);
+  expect(updatedPlayers).toEqual([players[1],]);
+});
+
+it('should attempt to update new players with cached values', async () => {
+  jest.spyOn(service, 'fetchPlayers').mockResolvedValueOnce(Promise.resolve([players[1],]));
+  jest.spyOn(service, 'getCachedPlayers').mockReturnValue([players[0],]);
+  jest.spyOn(service, 'updatePlayersWithCachedValues');
+  await service.updatePlayers();
+  expect(service.updatePlayersWithCachedValues).toHaveBeenCalledWith([players[1],], [players[0],]);
+});
+
+// Other
 
 it('should get players from local storage', () => {
   const cachedPlayers = service.getCachedPlayers();

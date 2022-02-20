@@ -66,22 +66,13 @@ class PlayersService implements IPlayersService {
     ));
   };
 
-  updatePlayers = async (): Promise<PlayerModel[]> => {
-    // fetch players
-    const newPlayers = await this.fetchPlayers();
-    // if no players... abort, notify
-    if (!newPlayers || newPlayers.length < 1) {
-      console.warn('No new players', newPlayers);
-      return this.getCachedPlayers();
-    }
-    const cachedPlayers = this.getCachedPlayers();
-    if (!cachedPlayers || cachedPlayers.length < 1) {
-      console.warn('No new players', newPlayers);
-      return newPlayers;
-    }
+  updatePlayersWithCachedValues = (
+    newPlayers: PlayerModel[],
+    cachedPlayers: PlayerModel[]
+  ): PlayerModel[] => {
     // forEach fetched player
     // find equivalent in cache (since order might b different)
-    const updatedPlayers = newPlayers.map((newPlayer) => {
+    return newPlayers.map((newPlayer) => {
       const foundCachedPlayer = cachedPlayers.find((cachedPlayer) => {
         return newPlayer.name === cachedPlayer.name;
       });
@@ -94,6 +85,22 @@ class PlayersService implements IPlayersService {
         return newPlayer;
       }
     });
+  };
+
+  updatePlayers = async (): Promise<PlayerModel[]> => {
+    // fetch players
+    const newPlayers = await this.fetchPlayers();
+    // if no players... abort, notify
+    if (!newPlayers || newPlayers.length < 1) {
+      console.warn('No new players', newPlayers);
+      return this.getCachedPlayers();
+    }
+    const cachedPlayers = this.getCachedPlayers();
+    if (!cachedPlayers || cachedPlayers.length < 1) {
+      console.warn('No cached players', newPlayers);
+      return newPlayers;
+    }
+    const updatedPlayers = this.updatePlayersWithCachedValues(newPlayers, cachedPlayers);
     return updatedPlayers;
   };
 
