@@ -16,11 +16,20 @@ it('should get picks for snake draft', () => {
   expect(snakeSpy).toHaveBeenCalledWith(7, 8, 16);
   expect(regSpy).not.toHaveBeenCalled();
   snakeSpy.mockRestore();
+  regSpy.mockRestore();
 });
 
 
 it('should get picks for regular draft', () => {
-  //
+  const snakeSpy = jest.spyOn(pickCalculator, 'getPicksForSnake');
+  const regSpy = jest.spyOn(pickCalculator, 'getPicksForRegular');
+
+  pickCalculator.getMyPicks(4, 6, 14, false);
+
+  expect(snakeSpy).not.toHaveBeenCalled();
+  expect(regSpy).toHaveBeenCalledWith(4, 6, 14);
+  snakeSpy.mockRestore();
+  regSpy.mockRestore();
 });
 
 
