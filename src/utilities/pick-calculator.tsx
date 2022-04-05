@@ -2,10 +2,10 @@
 const getMyPicks = (myPick: number, teams: number, rounds: number, snake: boolean): number[] => {
   if (snake) {
     // snake draft
-    return getPicksForSnake(myPick, teams, rounds);
+    return pickCalculator.getPicksForSnake(myPick, teams, rounds);
   } else {
     // regular draft
-    return getPicksForRegular(myPick, teams, rounds);
+    return pickCalculator.getPicksForRegular(myPick, teams, rounds);
   }
 };
 
@@ -44,8 +44,10 @@ const getPicksForRegular = (myPick: number, teams: number, rounds: number): numb
   return myPicks;
 };
 
-export default {
+const pickCalculator = {
   getMyPicks: getMyPicks,
   getPicksForSnake: getPicksForSnake,
   getPicksForRegular: getPicksForRegular,
 };
+
+export default pickCalculator;
