@@ -1,5 +1,5 @@
 import DraftRepo from '../models/DraftRepo';
-import PlayerModel, { PlayerMap } from '../models/PlayerModel';
+import PlayerModel from '../models/PlayerModel';
 import espnFantasyFilterHeader from '../utilities/espn-fantasy-filter-header.json';
 
 type PositionMapType = Record<1 | 2 | 3 | 4 | 5 | 16, string>;
@@ -59,44 +59,6 @@ class EspnDraftRepo implements DraftRepo {
     } else {
       return [];
     }
-    // try {
-    //   const res = await fetch(
-    //     this._url,
-    //     {
-    //       method: 'GET',
-    //       headers: {
-    //         'Accept': 'application/json',
-    //         'x-fantasy-filter': JSON.stringify(espnFantasyFilterHeader),
-    //       },
-    //     }
-    //   );
-    //   console.log('RES:', res);
-    //   const json: EspnDraftResponse = await res.json();
-
-    //   return json.players.map((playerObj: EspnDraftPlayerObj, index: number) =>
-    //     this.convertToPlayerModel(playerObj.player, index));
-    // } catch (e) {
-    //   console.error('Error getting players', e);
-    //   return [];
-    // }
-
-    // return fetch(
-    //   this._url,
-    //   {
-    //     method: 'GET',
-    //     headers: {
-    //       'Accept': 'application/json',
-    //       'x-fantasy-filter': JSON.stringify(espnFantasyFilterHeader),
-    //     },
-    //   }
-    // ).then((data) => {
-    //   return data.json();
-    // }).then((data) => {
-    //   return data.players.map((playerObj: EspnDraftPlayerObj, index: number) =>
-    //     this.convertToPlayerModel(playerObj.player, index));
-    // }).catch((e: Error) => {
-    //   console.error('Error getting players', e);
-    // });
   };
 
   fetchPlayers = async (): Promise<EspnDraftResponse> => {
@@ -119,7 +81,7 @@ class EspnDraftRepo implements DraftRepo {
     }
   }
 
-  convertToPlayerModel(players: EspnDraftPlayerObj[]): PlayerModel[] {
+  convertToPlayerModel = (players: EspnDraftPlayerObj[]): PlayerModel[] => {
     return players.map((playerObj: EspnDraftPlayerObj, index: number) => {
       const player = playerObj.player;
       return new PlayerModel({
@@ -138,23 +100,6 @@ class EspnDraftRepo implements DraftRepo {
         faved: player['faved'] ?? false,
       });
     });
-
-    // const map: PlayerMap = {
-    //   playerId: player['id'] ?? null,
-    //   num: index + 1,
-    //   name: player['fullName'] ?? null,
-    //   position: positionMap[player.defaultPositionId] ?? 'N/A',
-    //   team: teamMap[player.proTeamId] ?? 'N/A',
-    //   adp: Math.floor(player.ownership.averageDraftPosition) ?? 0,
-    //   timesDrafted: 0,
-    //   high: 0,
-    //   low: 0,
-    //   stdev: 0,
-    //   bye: 0,
-    //   picked: player['picked'] ?? false,
-    //   faved: player['faved'] ?? false,
-    // };
-    // return new PlayerModel(map);
   }
 }
 
