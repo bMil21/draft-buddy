@@ -8,11 +8,15 @@ type TeamMapType = Record<1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
   | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 33 | 34,
   string>;
 
-interface EspnDraftPlayerObj {
+export interface EspnDraftResponse {
+  players: EspnDraftPlayerObj[];
+}
+
+export interface EspnDraftPlayerObj {
   player: EspnDraftPlayer;
 }
 
-interface EspnDraftPlayer {
+export interface EspnDraftPlayer {
   fullName: string;
   id: number;
   defaultPositionId: keyof PositionMapType;
@@ -22,7 +26,7 @@ interface EspnDraftPlayer {
   faved?: boolean;
 }
 
-interface EspnDraftOwnership {
+export interface EspnDraftOwnership {
   averageDraftPosition: number;
 }
 
@@ -48,43 +52,109 @@ const teamMap: TeamMapType = {
 class EspnDraftRepo implements DraftRepo {
   private _url = 'https://fantasy.espn.com/apis/v3/games/ffl/seasons/2021/segments/0/leaguedefaults/3?scoringPeriodId=0&view=kona_player_info';
 
-  getPlayers = (): Promise<PlayerModel[]> => {
-    return fetch(
-      this._url,
-      {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'x-fantasy-filter': JSON.stringify(espnFantasyFilterHeader),
-        },
-      }
-    ).then((data) => {
-      return data.json();
-    }).then((data) => {
-      return data.players.map((playerObj: EspnDraftPlayerObj, index: number) =>
-        this.convertToPlayerModel(playerObj.player, index));
-    }).catch((e: Error) => {
-      console.error('Error getting players', e);
-    });
+  getPlayers = async (): Promise<PlayerModel[]> => {
+    const res = await this.fetchPlayers();
+    if (res?.players) {
+      return this.convertToPlayerModel(res.players);
+    } else {
+      return [];
+    }
+    // try {
+    //   const res = await fetch(
+    //     this._url,
+    //     {
+    //       method: 'GET',
+    //       headers: {
+    //         'Accept': 'application/json',
+    //         'x-fantasy-filter': JSON.stringify(espnFantasyFilterHeader),
+    //       },
+    //     }
+    //   );
+    //   console.log('RES:', res);
+    //   const json: EspnDraftResponse = await res.json();
+
+    //   return json.players.map((playerObj: EspnDraftPlayerObj, index: number) =>
+    //     this.convertToPlayerModel(playerObj.player, index));
+    // } catch (e) {
+    //   console.error('Error getting players', e);
+    //   return [];
+    // }
+
+    // return fetch(
+    //   this._url,
+    //   {
+    //     method: 'GET',
+    //     headers: {
+    //       'Accept': 'application/json',
+    //       'x-fantasy-filter': JSON.stringify(espnFantasyFilterHeader),
+    //     },
+    //   }
+    // ).then((data) => {
+    //   return data.json();
+    // }).then((data) => {
+    //   return data.players.map((playerObj: EspnDraftPlayerObj, index: number) =>
+    //     this.convertToPlayerModel(playerObj.player, index));
+    // }).catch((e: Error) => {
+    //   console.error('Error getting players', e);
+    // });
   };
 
-  convertToPlayerModel(player: EspnDraftPlayer, index: number): PlayerModel {
-    const map: PlayerMap = {
-      playerId: player['id'] ?? null,
-      num: index + 1,
-      name: player['fullName'] ?? null,
-      position: positionMap[player.defaultPositionId] ?? 'N/A',
-      team: teamMap[player.proTeamId] ?? 'N/A',
-      adp: Math.floor(player.ownership.averageDraftPosition) ?? 0,
-      timesDrafted: 0,
-      high: 0,
-      low: 0,
-      stdev: 0,
-      bye: 0,
-      picked: player['picked'] ?? false,
-      faved: player['faved'] ?? false,
-    };
-    return new PlayerModel(map);
+  fetchPlayers = async (): Promise<EspnDraftResponse> => {
+    try {
+      const res = await fetch(
+        this._url,
+        {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'x-fantasy-filter': JSON.stringify(espnFantasyFilterHeader),
+          },
+        }
+      );
+      console.log('RES:', res);
+      return res.json();
+    } catch (e) {
+      console.error('Error getting players', e);
+      return { players: [], };
+    }
+  }
+
+  convertToPlayerModel(players: EspnDraftPlayerObj[]): PlayerModel[] {
+    return players.map((playerObj: EspnDraftPlayerObj, index: number) => {
+      const player = playerObj.player;
+      return new PlayerModel({
+        playerId: player['id'] ?? null,
+        num: index + 1,
+        name: player['fullName'] ?? null,
+        position: positionMap[player.defaultPositionId] ?? 'N/A',
+        team: teamMap[player.proTeamId] ?? 'N/A',
+        adp: Math.floor(player.ownership.averageDraftPosition) ?? 0,
+        timesDrafted: 0,
+        high: 0,
+        low: 0,
+        stdev: 0,
+        bye: 0,
+        picked: player['picked'] ?? false,
+        faved: player['faved'] ?? false,
+      });
+    });
+
+    // const map: PlayerMap = {
+    //   playerId: player['id'] ?? null,
+    //   num: index + 1,
+    //   name: player['fullName'] ?? null,
+    //   position: positionMap[player.defaultPositionId] ?? 'N/A',
+    //   team: teamMap[player.proTeamId] ?? 'N/A',
+    //   adp: Math.floor(player.ownership.averageDraftPosition) ?? 0,
+    //   timesDrafted: 0,
+    //   high: 0,
+    //   low: 0,
+    //   stdev: 0,
+    //   bye: 0,
+    //   picked: player['picked'] ?? false,
+    //   faved: player['faved'] ?? false,
+    // };
+    // return new PlayerModel(map);
   }
 }
 
