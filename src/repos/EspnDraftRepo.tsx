@@ -50,7 +50,24 @@ const teamMap: TeamMapType = {
 };
 
 class EspnDraftRepo implements DraftRepo {
-  private _url = 'https://fantasy.espn.com/apis/v3/games/ffl/seasons/2021/segments/0/leaguedefaults/3?scoringPeriodId=0&view=kona_player_info';
+  private _currentYear: number;
+  private _url: string;
+
+  constructor() {
+    this._currentYear = this._getCurrentYear();
+    this._url = this._getUrl(this._currentYear);
+  }
+
+  private _getCurrentYear(): number {
+    const currentDate = new Date();
+    // If it's June or later, use this year
+    // If it's before June, use previous year
+    return (currentDate.getMonth() >= 5) ? currentDate.getFullYear() : currentDate.getFullYear() - 1;
+  }
+
+  private _getUrl(year: number): string {
+    return `https://fantasy.espn.com/apis/v3/games/ffl/seasons/${year}/segments/0/leaguedefaults/3?scoringPeriodId=0&view=kona_player_info`;
+  }
 
   getPlayers = async (): Promise<PlayerModel[]> => {
     const res = await this.fetchPlayers();
