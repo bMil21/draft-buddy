@@ -5,11 +5,11 @@ class PlayerModel {
   name: string;
   position: string;
   team: string;
-  adp: number;
-  timesDrafted: number;
-  high: number;
-  low: number;
-  stdev: number;
+  adp?: number;
+  timesDrafted?: number;
+  high?: number;
+  low?: number;
+  stdev?: number;
   bye: number;
   picked?: boolean;
   faved?: boolean;

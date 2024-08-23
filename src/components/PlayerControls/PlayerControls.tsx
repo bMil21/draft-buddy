@@ -60,6 +60,7 @@ function PlayerControls(props: PlayerControlsProps): JSX.Element {
           value={props.draftRepoName}
           onChange={handleDraftRepoChange}
         >
+          <MenuItem value={DraftRepoEnum.local2024}>Local 2024</MenuItem>
           <MenuItem value={DraftRepoEnum.local}>Local</MenuItem>
           <MenuItem value={DraftRepoEnum.espn}>ESPN</MenuItem>
           <MenuItem value={DraftRepoEnum.ffballCalc}>FFball Calculator</MenuItem>

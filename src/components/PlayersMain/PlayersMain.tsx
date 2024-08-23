@@ -22,7 +22,7 @@ function PlayersMain(): JSX.Element {
   const [players, setPlayers,] = useState<PlayerModel[]>([]);
   const [playersToShow, setPlayersToShow,] = useState<PlayerModel[]>(players);
   const [filters, setFilters,] = useState<PlayerModelProps>(new Map());
-  const myPicks = PickCalculator.getMyPicks(10, 14, 16, true);
+  const myPicks = PickCalculator.getMyPicks(8, 12, 16, true);
 
   const getPlayers = async (): Promise<void> => {
     const players = await playersService.getPlayers();

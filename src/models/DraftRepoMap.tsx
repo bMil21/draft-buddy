@@ -5,13 +5,15 @@ import DraftRepo from './DraftRepo';
 export enum DraftRepoEnum {
   espn = 'espn',
   local = 'local',
+  local2024 = 'local2024',
   ffballCalc = 'ffballCalc',
 }
 
 const DraftRepoMap = new Map<DraftRepoEnum, DraftRepo>([
   [DraftRepoEnum.espn, new EspnDraftRepo(),],
-  [DraftRepoEnum.local, new LocalDraftRepo(),],
-  [DraftRepoEnum.ffballCalc, new LocalDraftRepo(),],
+  [DraftRepoEnum.local, new LocalDraftRepo('assets/data/espn-players-2024.json'),],
+  [DraftRepoEnum.local2024, new LocalDraftRepo('assets/data/espn-players-2024.json'),],
+  [DraftRepoEnum.ffballCalc, new LocalDraftRepo('assets/data/espn-players-2024.json'),],
 ]);
 
 export default DraftRepoMap;
