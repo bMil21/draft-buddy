@@ -53,4 +53,21 @@ afterEach(() => {
 it('should get players', async () => {
   const players = await repo.getPlayers();
   expect(players).toEqual(expectedPlayers);
+  // expect fetchPlayers call
+  // expect convertToPlayerModel call
+});
+
+it('should fetch players successfully', () => {
+  // expect fetch call
+  // expect certain fetch properties
+  // expect res.json()
+});
+
+it('should fail to fetch players', () => {
+  // expect fetch call
+  // expect empty array
+});
+
+it('should convert players to Player Models', () => {
+  //
 });
