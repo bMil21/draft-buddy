@@ -40,8 +40,7 @@ const expectedPlayers = [
 ];
 
 beforeEach(() => {
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  global.fetch = jest.fn(() => Promise.resolve({ json: () => mockJson, })) as jest.Mock;
+  jest.fn(() => Promise.resolve({ json: () => mockJson, })) as jest.Mock;
 
   repo = new EspnDraftRepo();
 });
