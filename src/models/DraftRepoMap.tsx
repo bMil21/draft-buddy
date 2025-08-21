@@ -7,6 +7,7 @@ export enum DraftRepoEnum {
   local = 'local',
   local2024 = 'local2024',
   ffballCalc = 'ffballCalc',
+  local2025 = 'local2025',
 }
 
 const DraftRepoMap = new Map<DraftRepoEnum, DraftRepo>([
@@ -14,7 +15,7 @@ const DraftRepoMap = new Map<DraftRepoEnum, DraftRepo>([
   [DraftRepoEnum.local, new LocalDraftRepo('assets/data/espn-players-2024.json'),],
   [DraftRepoEnum.local2024, new LocalDraftRepo('assets/data/espn-players-2024.json'),],
   [DraftRepoEnum.ffballCalc, new LocalDraftRepo('assets/data/espn-players-2024.json'),],
+  [DraftRepoEnum.ffballCalc, new LocalDraftRepo('assets/data/espn-players-2025.json'),],
 ]);
 
 export default DraftRepoMap;
- 

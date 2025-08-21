@@ -64,6 +64,7 @@ function PlayerControls(props: PlayerControlsProps): JSX.Element {
           <MenuItem value={DraftRepoEnum.local}>Local</MenuItem>
           <MenuItem value={DraftRepoEnum.espn}>ESPN</MenuItem>
           <MenuItem value={DraftRepoEnum.ffballCalc}>FFball Calculator</MenuItem>
+          <MenuItem value={DraftRepoEnum.local2025}>Local 2025</MenuItem>
         </Select>
       </FormControl>
       <Divider orientation="vertical" flexItem />

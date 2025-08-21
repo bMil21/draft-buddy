@@ -17,7 +17,6 @@
         "sourceType": "module"
     },
     "plugins": [
-        "react",
         "@typescript-eslint"
     ],
     "rules": {
@@ -37,12 +36,15 @@
             "error",
             "always"
         ],
-        "comma-dangle": ["error", {
-            "arrays": "always",
-            "objects": "always",
-            "imports": "never",
-            "exports": "never",
-            "functions": "never"
-        }]
+        "comma-dangle": [
+            "error",
+            {
+                "arrays": "always",
+                "objects": "always",
+                "imports": "never",
+                "exports": "never",
+                "functions": "never"
+            }
+        ]
     }
 }
